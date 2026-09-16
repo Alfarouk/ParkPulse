@@ -34,3 +34,6 @@ models/*.cbm
 models/traffic_context_experiments/
 optimization_experiment/models/
 recovery_experiment/models/
+
+# Reproducible training-run summaries (curated model_summary.csv stays tracked)
+artifacts/training_model_summary.csv

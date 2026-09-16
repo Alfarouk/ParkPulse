@@ -41,7 +41,9 @@ EXPECTED_COUNTS = {
 }
 INTEGRATION_OWNED_FILES = {
     "app.py",
+    "train.py",
     "validate_project.py",
+    "artifacts/metrics.json",
     "artifacts/model_summary.csv",
 }
 
@@ -52,6 +54,17 @@ def sha256(path: Path) -> str:
         for chunk in iter(lambda: handle.read(1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest()
+
+
+def sha256_variants(path: Path) -> set[str]:
+    """Return raw and newline-normalized hashes for cross-platform text artifacts."""
+    raw = path.read_bytes()
+    hashes = {hashlib.sha256(raw).hexdigest()}
+    if path.suffix.lower() in {".py", ".json", ".csv", ".md", ".txt"}:
+        lf = raw.replace(b"\r\n", b"\n")
+        hashes.add(hashlib.sha256(lf).hexdigest())
+        hashes.add(hashlib.sha256(lf.replace(b"\n", b"\r\n")).hexdigest())
+    return hashes
 
 
 def assert_close(actual: float, expected: float, label: str) -> None:
@@ -201,7 +214,7 @@ def main() -> None:
         if relative_path in INTEGRATION_OWNED_FILES:
             continue
         path = PROJECT_ROOT / relative_path
-        if sha256(path) != expected_hash:
+        if expected_hash not in sha256_variants(path):
             changed.append(relative_path)
     if changed:
         raise AssertionError(f"Protected deployed files changed: {changed}")

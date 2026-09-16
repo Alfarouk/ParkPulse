@@ -26,6 +26,7 @@ REGRESSION_PRED_PATH = Path("artifacts/catboost_test_predictions.csv")
 METRICS_PATH = Path("artifacts/metrics.json")
 THRESHOLD_PATH = Path("artifacts/traffic_context_experiments/threshold_search.csv")
 DEPLOYED_RF_PATH = Path("models/random_forest_classifier.joblib")
+DEPLOYED_CATBOOST_REG_PATH = Path("models/catboost_regressor.cbm")
 
 
 def assert_metrics_match(actual, expected, label):
@@ -51,6 +52,7 @@ def main():
         METRICS_PATH,
         THRESHOLD_PATH,
         DEPLOYED_RF_PATH,
+        DEPLOYED_CATBOOST_REG_PATH,
     ]
     missing = [str(path) for path in required_paths if not path.exists()]
     if missing:
@@ -68,6 +70,7 @@ def main():
     threshold = float(deployment["threshold"])
 
     deployed_hash = sha256(DEPLOYED_RF_PATH)
+    deployed_regressor_hash = sha256(DEPLOYED_CATBOOST_REG_PATH)
 
     threshold_table = pd.read_csv(THRESHOLD_PATH)
     rf_validation = threshold_table.loc[
@@ -145,7 +148,8 @@ def main():
         "classifier_test_rows": len(classifier_pred),
         "classification": classification,
         "deployed_regressor": "catboost",
-        "regressor_model_file": "models/catboost_regressor.cbm",
+        "regressor_model_file": str(DEPLOYED_CATBOOST_REG_PATH),
+        "regressor_sha256": deployed_regressor_hash,
         "regression_test_rows": len(regression_pred),
         "regression": regression,
     }, indent=2))

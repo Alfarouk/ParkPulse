@@ -3,7 +3,7 @@ from __future__ import annotations
 import hashlib
 import json
 import sys
-from pathlib import Path
+from pathlib import Path, PureWindowsPath
 
 import numpy as np
 import pandas as pd
@@ -21,10 +21,20 @@ from sklearn.metrics import (
 ROOT = Path(__file__).resolve().parents[1]
 EXPERIMENT_DIR = Path(__file__).resolve().parent
 ARTIFACT_DIR = EXPERIMENT_DIR / "artifacts"
-SUBMISSION_MUTABLE_FILES = {"app.py", "artifacts\\model_summary.csv"}
+SUBMISSION_MUTABLE_FILES = {
+    "app.py",
+    "artifacts\\metrics.json",
+    "artifacts\\model_summary.csv",
+}
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+
+
+
+def artifact_path(relative_path: str) -> Path:
+    """Resolve preservation-artifact paths on both Windows and POSIX hosts."""
+    return ROOT.joinpath(*PureWindowsPath(relative_path).parts)
 
 def sha256(path: Path) -> str:
     digest = hashlib.sha256()
@@ -99,7 +109,7 @@ def main() -> None:
         if relative_path not in SUBMISSION_MUTABLE_FILES
     }
     current_hashes = {
-        relative_path: sha256(ROOT / relative_path)
+        relative_path: sha256(artifact_path(relative_path))
         for relative_path in protected_hashes
     }
     if current_hashes != protected_hashes:

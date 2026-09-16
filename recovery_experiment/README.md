@@ -1,5 +1,7 @@
 # ParkPulse Recovery Classifier Experiment
 
+> **Archived exploratory study:** this experiment is outside the final ParkPulse scope. It is retained only as research evidence and is not loaded by the dashboard or used by the deployed decision logic.
+
 This experiment predicts whether a currently saturated garage will recover below 90% occupancy approximately 30 minutes later. It was developed and validated in isolation and remains experimental. The deployed Streamlit dashboard does not load it or use recovery predictions in operational status routing.
 
 ## Leakage controls

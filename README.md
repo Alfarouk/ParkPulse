@@ -1,20 +1,109 @@
 # ParkPulse
 
-ParkPulse is an academic historical/backtest prototype for Birmingham parking occupancy. It is not connected to live Birmingham data. Given a historical observation, it estimates occupied spaces about 30 minutes later and issues a true early warning only when a garage is currently below 90% occupancy but is at risk of reaching at least 90%.
+ParkPulse is a **historical machine-learning backtest for Birmingham parking saturation**. It is designed as an early-warning system: for a car park that is **currently below 90% occupancy**, ParkPulse estimates whether it will reach **at least 90% occupancy approximately 30 minutes later**.
+
+This repository is **not connected to live Birmingham parking or traffic feeds** and should not be interpreted as a current operational service.
+
+## Core question
+
+> Which currently-unsaturated car parks are likely to cross 90% occupancy approximately 30 minutes later?
+
+ParkPulse uses two deployed models for different purposes:
+
+- **Random Forest classifier:** produces the early-warning risk for car parks currently below 90% occupancy.
+- **CatBoost regressor:** estimates the number of occupied spaces approximately 30 minutes later for all car parks.
+
+Car parks that are already at least 90% occupied are outside the classifier's target problem and are shown as `ALREADY SATURATED` with early-warning probability `Not applicable`.
+
+## Data and target construction
+
+The main dataset is the UCI **Parking Birmingham** dataset. The raw file contains 35,717 observations from 30 car parks covering 4 October 2016 to 19 December 2016.
+
+The main pipeline:
+
+1. removes missing/invalid rows, negative occupancies, rows where occupancy exceeds capacity, and duplicate car-park/timestamp records;
+2. creates only past-looking lag, change, calendar, and occupancy features;
+3. matches each current observation to the nearest observation around `t + 30 minutes`, with a tolerance of ±10 minutes;
+4. therefore evaluates targets at an actual offset of **20–40 minutes** rather than pretending every sensor reading occurs exactly 30 minutes later.
+
+After cleaning, feature generation, and future-target matching, the modeled dataset contains **32,281 rows**.
+
+### Early-warning target
+
+A row is classifier-eligible only when:
+
+```text
+current occupancy ratio < 0.90
+```
+
+The positive class is:
+
+```text
+current occupancy ratio < 0.90
+AND
+future occupancy ratio >= 0.90
+```
+
+Rows already at or above 90% are excluded from classifier training and evaluation rather than being converted into negative examples.
+
+## Features
+
+The deployed parking-only models use 12 features available at prediction time:
+
+```text
+parking_id
+capacity
+occupancy
+occupancy_ratio
+lag30_ratio
+lag60_ratio
+delta30_ratio
+delta60_ratio
+hour_sin
+hour_cos
+weekday
+is_weekend
+```
+
+## Leakage-safe evaluation
+
+The data is split **chronologically**, never randomly. Future labels are also kept inside their corresponding split boundaries so an observation in one period cannot use a target from a later split.
+
+| Split | All modeled rows | Classifier-eligible rows |
+|---|---:|---:|
+| Train | 23,197 | 21,593 |
+| Validation | 4,160 | 3,676 |
+| Untouched test | 4,873 | 4,511 |
+
+The untouched classifier test set contains **70 positive early-warning events among 4,511 eligible rows**, a prevalence of about **1.55%**. Because the positive class is rare, the project emphasizes **precision, recall, F1, and PR-AUC** rather than headline accuracy.
 
 ## Final deployed system
 
-- **Early-warning classifier:** parking-only Random Forest, loaded from `models/random_forest_classifier.joblib`.
-- **Alert threshold:** `0.21`, selected by maximum F1 on the chronological validation set.
-- **Eligibility:** current occupancy ratio below `0.90` only.
-- **Statuses:** `NORMAL`, `EARLY WARNING`, or `ALREADY SATURATED`.
-- **Occupancy regressor:** CatBoost, loaded from `models/catboost_regressor.cbm`, applied to all rows.
+### Early-warning classifier
 
-For classifier-eligible rows, the positive target is future occupancy ratio at least `0.90` approximately 30 minutes later. Rows already at least 90% occupied are excluded from classifier training, validation, and testing rather than converted into negative examples. The Streamlit dashboard marks them `ALREADY SATURATED` and displays the early-warning probability as not applicable.
+- Model: **parking-only Random Forest**
+- Model file: `models/random_forest_classifier.joblib`
+- Alert threshold: **0.21**
+- Threshold selection: maximum F1 on the chronological validation set
 
-## Leakage-safe methodology
+Decision routing:
 
-Parking observations are ordered chronologically and split into train, validation, and untouched test periods. Future labels are kept within their split boundaries. Lag and change features use only information available at prediction time. Model, feature, hyperparameter, and threshold choices use training/validation data only; the test period is reserved for final evaluation.
+```python
+if current_fill >= 0.90:
+    status = "ALREADY SATURATED"
+elif rf_probability >= 0.21:
+    status = "EARLY WARNING"
+else:
+    status = "NORMAL"
+```
+
+### Occupancy regressor
+
+- Model: **CatBoost Regressor**
+- Model file: `models/catboost_regressor.cbm`
+- Output: estimated occupied-car count approximately 30 minutes later
+
+The classifier and regressor are deliberately separate. The **classifier controls the saturation warning**; the CatBoost point estimate does not.
 
 ## Final held-out performance
 
@@ -32,45 +121,66 @@ Parking observations are ordered chronologically and split into train, validatio
 | Validation | 17.14 cars | 28.32 cars | 0.9985 |
 | Untouched test | 18.78 cars | 34.66 cars | 0.9978 |
 
-`artifacts/metrics.json` is the source of truth for full-precision values. `artifacts/model_summary.csv` provides the deployment/experiment inventory without requiring non-deployed model binaries.
+`artifacts/metrics.json` stores the full-precision deployment metrics.
 
-## Retained experiments
+### Why the classifier is the warning model
 
-### Birmingham telematics second dataset
+The regression model is strong overall, but a single point estimate is not the same as a threshold-crossing probability. Among the **70** untouched-test rows that were below 90% and actually reached at least 90% approximately 30 minutes later, the raw CatBoost point forecast remained below 90% in **29 cases (41.43%)**.
 
-`compare_traffic_context.py`, `validate_traffic_context.py`, `src/traffic_context.py`, and `artifacts/traffic_context_experiments/` preserve the day/hour mapping, traffic aggregates, validation evidence, threshold searches, and model comparisons. On untouched test data, parking-only Random Forest achieved F1 67.61% and PR-AUC 77.41%; parking plus telematics achieved F1 65.03% and PR-AUC 75.51%. The telematics features therefore remain experimental and are not loaded by the app.
+For that reason, ParkPulse uses the Random Forest classifier for the early-warning decision and treats the CatBoost forecast as a supporting continuous occupancy estimate.
 
-The large `data/Year_2016.csv` file is intentionally ignored by Git. See `data/README.md` for its University of Birmingham source and placement instructions.
+The Streamlit dashboard clips displayed regression predictions to the physical range `[0, capacity]`. Reported regression metrics are calculated from the **raw** CatBoost predictions, before display clipping.
+
+## Supporting experiments
+
+The extra experiments are retained as evidence of model-development decisions, not as additional deployed systems.
+
+### Birmingham telematics context
+
+A second University of Birmingham telematics dataset was aggregated into typical citywide day/hour traffic context and added to the parking features. On the untouched test period:
+
+| Model | Precision | Recall | F1 | PR-AUC |
+|---|---:|---:|---:|---:|
+| Parking-only Random Forest | 66.67% | 68.57% | 67.61% | 77.41% |
+| Parking + telematics Random Forest | 56.99% | 75.71% | 65.03% | 75.51% |
+
+Traffic context increased recall but reduced precision, F1, and PR-AUC, so the **parking-only Random Forest was retained**.
+
+See `artifacts/traffic_context_experiments/` and `compare_traffic_context.py`.
 
 ### Performance optimization
 
-`optimization_experiment/` preserves the runner, validator, frozen validation-only selection, rolling comparisons, feature manifests, target-feasibility analysis, and untouched-test predictions. The optimized candidate improved development/rolling validation but did not improve the untouched test period, so it did not replace the deployed Random Forest.
+A separate optimization study tested richer dynamics/history features and tuned model candidates using rolling chronological validation. The best development candidate was a CatBoost classifier, but the improvement did not generalize to the untouched test period:
 
-### Recovery forecasting
+| Model | Test Precision | Test Recall | Test F1 | Test PR-AUC |
+|---|---:|---:|---:|---:|
+| Deployed Random Forest | 66.67% | 68.57% | 67.61% | 77.41% |
+| Optimized CatBoost candidate | 62.67% | 67.14% | 64.83% | 76.71% |
 
-`recovery_experiment/` preserves the runner, validator, metrics, model comparison, threshold search, and selected-model test predictions. It studied whether already-saturated garages would fall below 90% about 30 minutes later. The validation-selected Random Forest achieved test precision 69.86%, recall 78.46%, F1 73.91%, and PR-AUC 82.12% at threshold 0.32. Recovery forecasting remains experimental and is not part of deployed decision routing.
+The simpler deployed Random Forest was therefore retained.
 
-Non-deployed experiment binaries are omitted from the submission because the retained runners reproduce them and the compact metrics/predictions preserve the evidence.
+See `optimization_experiment/`.
 
 ## Repository layout
 
 ```text
-app.py                         Streamlit historical demo
-train.py                       Parking-only training pipeline
+app.py                         Streamlit historical backtest demo
+train.py                       Parking-only training/evaluation pipeline
 validate_project.py            Final deployment validator
-compare_traffic_context.py     Telematics experiment runner
-validate_traffic_context.py    Telematics mapping/results validator
+compare_traffic_context.py     Second-dataset experiment runner
+validate_traffic_context.py    Traffic mapping/results validator
 src/                           Shared feature and traffic-context code
-models/                        Two deployed model binaries only
+models/                        Two deployed model binaries
 artifacts/                     Final metrics, predictions, and experiment evidence
-data/                          Parking data and local telematics instructions
-optimization_experiment/       Isolated optimization research
-recovery_experiment/           Isolated recovery research
+data/                          Parking dataset and telematics download instructions
+optimization_experiment/       Supporting model-optimization research
 ```
+
+An older recovery-forecasting study is retained in `recovery_experiment/` as **archived exploratory work outside the final ParkPulse scope**. It is not loaded by the dashboard and is not part of the deployed decision logic.
 
 ## Setup and run
 
-From this directory:
+From the project root:
 
 ```powershell
 python -m venv .venv
@@ -79,15 +189,35 @@ python -m pip install -r requirements.txt
 streamlit run app.py
 ```
 
-The included `data/dataset.csv` is the original Parking Birmingham dataset. Training is optional because the two deployed model binaries and validated artifacts are included.
+Training is optional because the two deployed model binaries and validated artifacts are included. Re-running `train.py` may create additional non-deployed comparison binaries locally; `.gitignore` keeps those reproducible outputs out of the repository.
 
 ## Validation
 
+Core deployment:
+
 ```powershell
 python validate_project.py
-python validate_traffic_context.py
-python optimization_experiment/validate_experiment.py
-python recovery_experiment/validate_experiment.py
 ```
 
-The traffic validator requires the locally downloaded `data/Year_2016.csv`. Experimental model binaries are not required by the validators.
+Supporting optimization experiment:
+
+```powershell
+python optimization_experiment/validate_experiment.py
+```
+
+Traffic-context experiment, when the local `data/Year_2016.csv` file is available:
+
+```powershell
+python validate_traffic_context.py
+```
+
+## Limitations
+
+- The data is historical and comes from 2016; this project does **not** claim that the same model represents Birmingham parking conditions today.
+- The dashboard is a held-out historical simulation/backtest, not a live service.
+- Parking IDs do not include travel-time or geospatial-routing information, so ParkPulse ranks lower-risk car parks rather than recommending a destination based on journey time.
+- A production version would need live parking/traffic feeds, monitoring for distribution or concept drift, and periodic retraining/revalidation.
+
+## Data attribution
+
+See `data/README.md` for the UCI Parking Birmingham citation, licensing information, and the University of Birmingham telematics source.

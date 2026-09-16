@@ -13,8 +13,6 @@ from src.pipeline import FEATURES, SATURATION_THRESHOLD
 
 ARTIFACT_DIR = Path("artifacts")
 MODEL_DIR = Path("models")
-RECOVERY_EXPERIMENT_DIR = Path("recovery_experiment")
-RECOVERY_METRICS_PATH = RECOVERY_EXPERIMENT_DIR / "artifacts" / "metrics.json"
 TRAFFIC_COMPARISON_PATH = (
     ARTIFACT_DIR / "traffic_context_experiments" / "selected_model_comparison.csv"
 )
@@ -37,11 +35,6 @@ with open(ARTIFACT_DIR / "metrics.json", "r", encoding="utf-8") as f:
     metrics = json.load(f)
 deployment = metrics["deployed_classifier"]
 early_warning_threshold = float(deployment["threshold"])
-
-with RECOVERY_METRICS_PATH.open("r", encoding="utf-8") as f:
-    recovery_metrics = json.load(f)
-recovery_selection = recovery_metrics["selection"]
-recovery_threshold = float(recovery_selection["selected_threshold"])
 
 # The following comparison artifacts are presentation-only context. They do not affect
 # model loading, feature generation, predictions, or the deployed threshold.
@@ -101,14 +94,26 @@ if not slots:
     st.warning("No historical timestamps contain an early warning.")
     st.stop()
 
-selected_slot = st.selectbox("Choose historical time slot", slots, index=max(0, len(slots) - 2))
+selected_slot = st.selectbox(
+    "Choose historical observation window",
+    slots,
+    index=max(0, len(slots) - 2),
+)
+st.caption(
+    "Raw sensor observations are irregular. ParkPulse rounds timestamps to 30-minute "
+    "windows for navigation only; the exact historical timestamp is shown below."
+)
 slot_df = historical_rows[historical_rows["slot"] == selected_slot].copy()
 
 X = slot_df[FEATURES].copy()
 X["parking_id"] = X["parking_id"].astype(str)
 reg_pool = Pool(X, cat_features=["parking_id"])
-slot_df["predicted_occupancy"] = reg.predict(reg_pool)
-slot_df["predicted_occupancy"] = np.clip(slot_df["predicted_occupancy"], 0, slot_df["capacity"])
+slot_df["raw_predicted_occupancy"] = reg.predict(reg_pool)
+slot_df["predicted_occupancy"] = np.clip(
+    slot_df["raw_predicted_occupancy"],
+    0,
+    slot_df["capacity"],
+)
 slot_df["predicted_fill_pct"] = slot_df["predicted_occupancy"] / slot_df["capacity"] * 100
 slot_df["current_fill_pct"] = slot_df["occupancy"] / slot_df["capacity"] * 100
 
@@ -212,10 +217,11 @@ else:
     )
 
 st.markdown("#### Historical actual outcome (~30 minutes later)")
-actual_1, actual_2, actual_3 = st.columns(3)
+actual_1, actual_2, actual_3, actual_4 = st.columns(4)
 actual_1.metric("Actual occupied cars", f"{int(round(row['future_occupancy'])):,}")
 actual_2.metric("Actual fill", f"{row['future_occupancy_ratio']:.1%}")
-actual_3.metric(
+actual_3.metric("Actual forecast offset", f"{row['target_offset_minutes']:.1f} min")
+actual_4.metric(
     "Actual observation timestamp",
     row["future_timestamp"].strftime("%d %b %Y, %H:%M:%S"),
 )
@@ -249,7 +255,13 @@ with st.expander("How ParkPulse makes predictions"):
 with st.expander("Model Performance"):
     classifier_test = deployment["test"]
     regressor_test = metrics["catboost_regressor"]["test"]
-    st.caption("Performance on the untouched chronological test period.")
+    eligible_test = df.loc[df["occupancy_ratio"] < SATURATION_THRESHOLD]
+    positive_test = int(eligible_test["will_become_saturated_soon"].astype(int).sum())
+    st.caption(
+        "Performance on the untouched chronological test period. "
+        f"{positive_test:,} positive early-warning events among {len(eligible_test):,} "
+        f"eligible rows ({positive_test / len(eligible_test):.2%})."
+    )
     st.markdown("**Random Forest early-warning classifier**")
     clf_metrics = st.columns(4)
     clf_metrics[0].metric("Precision", f"{classifier_test['precision']:.2%}")
@@ -266,24 +278,9 @@ with st.expander("Model Performance"):
     reg_metrics[0].metric("MAE", f"{regressor_test['mae']:.2f} cars")
     reg_metrics[1].metric("RMSE", f"{regressor_test['rmse']:.2f} cars")
     reg_metrics[2].metric("R²", f"{regressor_test['r2']:.4f}")
-
-with st.expander("Experimental Recovery Forecasting"):
-    recovery_test = recovery_metrics["selected_test"]
-    st.write(
-        "A secondary parking-only Random Forest was tested on garages that were already at "
-        "least 90% occupied. It estimated the probability that occupancy would fall below 90% "
-        "approximately 30 minutes later."
-    )
-    recovery_metric_columns = st.columns(5)
-    recovery_metric_columns[0].metric("Precision", f"{recovery_test['precision']:.2%}")
-    recovery_metric_columns[1].metric("Recall", f"{recovery_test['recall']:.2%}")
-    recovery_metric_columns[2].metric("F1", f"{recovery_test['f1']:.2%}")
-    recovery_metric_columns[3].metric("PR-AUC", f"{recovery_test['pr_auc']:.2%}")
-    recovery_metric_columns[4].metric("Threshold", f"{recovery_threshold:.2f}")
-    st.warning(
-        "The recovery classifier remains experimental and is not used by the main ParkPulse "
-        "dashboard because its reliability was not considered strong enough for the deployed "
-        "operational decision logic."
+    st.caption(
+        "Regression metrics use raw CatBoost outputs. Dashboard occupancy values are clipped "
+        "only for display to the physical range from 0 to the car-park capacity."
     )
 
 with st.expander("Second Dataset Experiment"):
@@ -356,8 +353,7 @@ with st.expander("Optimization Experiment"):
 st.caption(
     "Early-warning classification uses the parking-only Random Forest with its "
     f"validation-selected {early_warning_threshold:.2f} threshold. The 30-minute occupancy "
-    "forecast uses CatBoost. Recovery forecasting remains experimental and is not part of the "
-    "main dashboard decision logic. "
-    "The telematics-enhanced classifier remains experimental because it reduced F1 and PR-AUC. "
+    "forecast uses CatBoost. The telematics-enhanced classifier remains experimental because "
+    "it reduced F1 and PR-AUC. "
     "This is a historical simulation/backtest using held-out observations, not live Birmingham data."
 )

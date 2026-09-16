@@ -236,7 +236,12 @@ def main():
         if "test" in info:
             row.update({f"test_{k}": v for k, v in info["test"].items()})
         summary_rows.append(row)
-    pd.DataFrame(summary_rows).to_csv(ARTIFACT_DIR / "model_summary.csv", index=False)
+    # Keep the curated deployment/experiment inventory in artifacts/model_summary.csv intact.
+    # This lightweight table is a reproducible by-product of a fresh training run.
+    pd.DataFrame(summary_rows).to_csv(
+        ARTIFACT_DIR / "training_model_summary.csv",
+        index=False,
+    )
 
     print(json.dumps(results, indent=2))
     print("\nPrimary decision rule: choose model and alert threshold using validation data only; use the test set only for final evaluation.")
