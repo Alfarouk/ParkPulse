@@ -1,0 +1,36 @@
+# Python environments and caches
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# IDE and operating-system files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Logs and temporary output
+*.log
+*.tmp
+*.out
+*.bak
+~$*
+catboost_info/
+
+# Large local-only research data
+data/Year_2016.csv
+
+# Reproducible, non-deployed model outputs
+models/*.joblib
+models/*.cbm
+!models/random_forest_classifier.joblib
+!models/catboost_regressor.cbm
+models/traffic_context_experiments/
+optimization_experiment/models/
+recovery_experiment/models/

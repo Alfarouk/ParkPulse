@@ -1,0 +1,406 @@
+{
+  "objective": "Predict recovery below 90% approximately 30 minutes later among currently saturated rows only.",
+  "features": [
+    "parking_id",
+    "capacity",
+    "occupancy",
+    "occupancy_ratio",
+    "lag30_ratio",
+    "lag60_ratio",
+    "delta30_ratio",
+    "delta60_ratio",
+    "hour_sin",
+    "hour_cos",
+    "weekday",
+    "is_weekend"
+  ],
+  "leakage_controls": {
+    "eligible_rows": "occupancy_ratio >= 0.90",
+    "target": "future_occupancy_ratio < 0.90",
+    "split": "existing chronological train/validation/test split",
+    "selection_data": "validation only",
+    "test_role": "evaluated only after candidate and threshold were frozen",
+    "telematics_used": false
+  },
+  "class_prevalence": {
+    "train": {
+      "rows": 1604,
+      "recovery_rows": 240,
+      "prevalence": 0.14962593516209477
+    },
+    "validation": {
+      "rows": 484,
+      "recovery_rows": 76,
+      "prevalence": 0.15702479338842976
+    },
+    "test": {
+      "rows": 362,
+      "recovery_rows": 65,
+      "prevalence": 0.17955801104972377
+    }
+  },
+  "train_positive_class_weight": 5.683333333333334,
+  "selection": {
+    "rule": "maximize the mean of validation F1 and validation PR-AUC; then F1, PR-AUC, minimum of precision/recall, lower Brier score",
+    "selected_candidate": "random_forest_default",
+    "selected_family": "random_forest",
+    "selected_config": "500 trees; min_samples_leaf=2; class_weight=None",
+    "selected_threshold": 0.32,
+    "selected_model_file": "models/random_forest_default.joblib",
+    "frozen_before_test_evaluation": true
+  },
+  "candidates": {
+    "baseline_remains_saturated": {
+      "family": "baseline",
+      "config": "always predict no recovery",
+      "kind": "baseline",
+      "fit_seconds": 0.0,
+      "threshold": 0.5,
+      "validation": {
+        "threshold": 0.5,
+        "rows": 484,
+        "positive_rows": 76,
+        "prevalence": 0.15702479338842976,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "pr_auc": 0.15702479338842976,
+        "roc_auc": 0.5,
+        "brier": 0.15702479338842976,
+        "confusion_matrix": {
+          "tn": 408,
+          "fp": 0,
+          "fn": 76,
+          "tp": 0
+        }
+      },
+      "test": {
+        "threshold": 0.5,
+        "rows": 362,
+        "positive_rows": 65,
+        "prevalence": 0.17955801104972377,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "pr_auc": 0.17955801104972377,
+        "roc_auc": 0.5,
+        "brier": 0.17955801104972377,
+        "confusion_matrix": {
+          "tn": 297,
+          "fp": 0,
+          "fn": 65,
+          "tp": 0
+        }
+      }
+    },
+    "logistic_default": {
+      "family": "logistic_regression",
+      "config": "class_weight=None",
+      "kind": "sklearn",
+      "fit_seconds": 0.06898809999984223,
+      "threshold": 0.31,
+      "validation": {
+        "threshold": 0.31,
+        "rows": 484,
+        "positive_rows": 76,
+        "prevalence": 0.15702479338842976,
+        "precision": 0.675,
+        "recall": 0.7105263157894737,
+        "f1": 0.6923076923076923,
+        "pr_auc": 0.7507669750470208,
+        "roc_auc": 0.9307275541795665,
+        "brier": 0.07046530779424537,
+        "confusion_matrix": {
+          "tn": 382,
+          "fp": 26,
+          "fn": 22,
+          "tp": 54
+        }
+      },
+      "test": {
+        "threshold": 0.31,
+        "rows": 362,
+        "positive_rows": 65,
+        "prevalence": 0.17955801104972377,
+        "precision": 0.6746987951807228,
+        "recall": 0.8615384615384616,
+        "f1": 0.7567567567567568,
+        "pr_auc": 0.8268874439500926,
+        "roc_auc": 0.9452473452473453,
+        "brier": 0.06477019506500811,
+        "confusion_matrix": {
+          "tn": 270,
+          "fp": 27,
+          "fn": 9,
+          "tp": 56
+        }
+      }
+    },
+    "logistic_balanced": {
+      "family": "logistic_regression",
+      "config": "class_weight=balanced",
+      "kind": "sklearn",
+      "fit_seconds": 0.026156299994909205,
+      "threshold": 0.67,
+      "validation": {
+        "threshold": 0.67,
+        "rows": 484,
+        "positive_rows": 76,
+        "prevalence": 0.15702479338842976,
+        "precision": 0.6867469879518072,
+        "recall": 0.75,
+        "f1": 0.7169811320754716,
+        "pr_auc": 0.7433236489223195,
+        "roc_auc": 0.9274703302373581,
+        "brier": 0.10028023163396829,
+        "confusion_matrix": {
+          "tn": 382,
+          "fp": 26,
+          "fn": 19,
+          "tp": 57
+        }
+      },
+      "test": {
+        "threshold": 0.67,
+        "rows": 362,
+        "positive_rows": 65,
+        "prevalence": 0.17955801104972377,
+        "precision": 0.6666666666666666,
+        "recall": 0.8615384615384616,
+        "f1": 0.7516778523489933,
+        "pr_auc": 0.816448320355172,
+        "roc_auc": 0.9403781403781404,
+        "brier": 0.11192344688152872,
+        "confusion_matrix": {
+          "tn": 269,
+          "fp": 28,
+          "fn": 9,
+          "tp": 56
+        }
+      }
+    },
+    "random_forest_default": {
+      "family": "random_forest",
+      "config": "500 trees; min_samples_leaf=2; class_weight=None",
+      "kind": "sklearn",
+      "fit_seconds": 0.8706861999962712,
+      "threshold": 0.32,
+      "validation": {
+        "threshold": 0.32,
+        "rows": 484,
+        "positive_rows": 76,
+        "prevalence": 0.15702479338842976,
+        "precision": 0.7215189873417721,
+        "recall": 0.75,
+        "f1": 0.7354838709677419,
+        "pr_auc": 0.7957309484875378,
+        "roc_auc": 0.9389189886480908,
+        "brier": 0.06444498654512647,
+        "confusion_matrix": {
+          "tn": 386,
+          "fp": 22,
+          "fn": 19,
+          "tp": 57
+        }
+      },
+      "test": {
+        "threshold": 0.32,
+        "rows": 362,
+        "positive_rows": 65,
+        "prevalence": 0.17955801104972377,
+        "precision": 0.6986301369863014,
+        "recall": 0.7846153846153846,
+        "f1": 0.7391304347826086,
+        "pr_auc": 0.8212169179186058,
+        "roc_auc": 0.9359233359233359,
+        "brier": 0.06830073303049748,
+        "confusion_matrix": {
+          "tn": 275,
+          "fp": 22,
+          "fn": 14,
+          "tp": 51
+        }
+      }
+    },
+    "random_forest_balanced": {
+      "family": "random_forest",
+      "config": "500 trees; min_samples_leaf=2; class_weight=balanced_subsample",
+      "kind": "sklearn",
+      "fit_seconds": 1.0672176999942167,
+      "threshold": 0.36,
+      "validation": {
+        "threshold": 0.36,
+        "rows": 484,
+        "positive_rows": 76,
+        "prevalence": 0.15702479338842976,
+        "precision": 0.6666666666666666,
+        "recall": 0.7894736842105263,
+        "f1": 0.7228915662650602,
+        "pr_auc": 0.7938177030745133,
+        "roc_auc": 0.9410797213622292,
+        "brier": 0.06453881501190908,
+        "confusion_matrix": {
+          "tn": 378,
+          "fp": 30,
+          "fn": 16,
+          "tp": 60
+        }
+      },
+      "test": {
+        "threshold": 0.36,
+        "rows": 362,
+        "positive_rows": 65,
+        "prevalence": 0.17955801104972377,
+        "precision": 0.6470588235294118,
+        "recall": 0.8461538461538461,
+        "f1": 0.7333333333333333,
+        "pr_auc": 0.8268735810628973,
+        "roc_auc": 0.9382025382025383,
+        "brier": 0.06894716379522038,
+        "confusion_matrix": {
+          "tn": 267,
+          "fp": 30,
+          "fn": 10,
+          "tp": 55
+        }
+      }
+    },
+    "catboost_default": {
+      "family": "catboost",
+      "config": "depth=7; learning_rate=0.05; class_weights=None",
+      "kind": "catboost",
+      "fit_seconds": 11.878674399995361,
+      "threshold": 0.33,
+      "validation": {
+        "threshold": 0.33,
+        "rows": 484,
+        "positive_rows": 76,
+        "prevalence": 0.15702479338842976,
+        "precision": 0.7297297297297297,
+        "recall": 0.7105263157894737,
+        "f1": 0.72,
+        "pr_auc": 0.7955062315965012,
+        "roc_auc": 0.9453366873065016,
+        "brier": 0.06553760615362066,
+        "confusion_matrix": {
+          "tn": 388,
+          "fp": 20,
+          "fn": 22,
+          "tp": 54
+        }
+      },
+      "test": {
+        "threshold": 0.33,
+        "rows": 362,
+        "positive_rows": 65,
+        "prevalence": 0.17955801104972377,
+        "precision": 0.7571428571428571,
+        "recall": 0.8153846153846154,
+        "f1": 0.7851851851851852,
+        "pr_auc": 0.8396294674361058,
+        "roc_auc": 0.9481481481481482,
+        "brier": 0.06337486736037393,
+        "confusion_matrix": {
+          "tn": 280,
+          "fp": 17,
+          "fn": 12,
+          "tp": 53
+        }
+      }
+    },
+    "catboost_balanced": {
+      "family": "catboost",
+      "config": "depth=7; learning_rate=0.05; class_weights=[1,5.683333]",
+      "kind": "catboost",
+      "fit_seconds": 10.807115400006296,
+      "threshold": 0.63,
+      "validation": {
+        "threshold": 0.63,
+        "rows": 484,
+        "positive_rows": 76,
+        "prevalence": 0.15702479338842976,
+        "precision": 0.6746987951807228,
+        "recall": 0.7368421052631579,
+        "f1": 0.7044025157232704,
+        "pr_auc": 0.795614434605928,
+        "roc_auc": 0.9416279669762642,
+        "brier": 0.08020863431933628,
+        "confusion_matrix": {
+          "tn": 381,
+          "fp": 27,
+          "fn": 20,
+          "tp": 56
+        }
+      },
+      "test": {
+        "threshold": 0.63,
+        "rows": 362,
+        "positive_rows": 65,
+        "prevalence": 0.17955801104972377,
+        "precision": 0.7012987012987013,
+        "recall": 0.8307692307692308,
+        "f1": 0.7605633802816901,
+        "pr_auc": 0.8462947795441792,
+        "roc_auc": 0.9492359492359492,
+        "brier": 0.0864787620832294,
+        "confusion_matrix": {
+          "tn": 274,
+          "fp": 23,
+          "fn": 11,
+          "tp": 54
+        }
+      }
+    }
+  },
+  "selected_validation": {
+    "threshold": 0.32,
+    "rows": 484,
+    "positive_rows": 76,
+    "prevalence": 0.15702479338842976,
+    "precision": 0.7215189873417721,
+    "recall": 0.75,
+    "f1": 0.7354838709677419,
+    "pr_auc": 0.7957309484875378,
+    "roc_auc": 0.9389189886480908,
+    "brier": 0.06444498654512647,
+    "confusion_matrix": {
+      "tn": 386,
+      "fp": 22,
+      "fn": 19,
+      "tp": 57
+    }
+  },
+  "selected_test": {
+    "threshold": 0.32,
+    "rows": 362,
+    "positive_rows": 65,
+    "prevalence": 0.17955801104972377,
+    "precision": 0.6986301369863014,
+    "recall": 0.7846153846153846,
+    "f1": 0.7391304347826086,
+    "pr_auc": 0.8212169179186058,
+    "roc_auc": 0.9359233359233359,
+    "brier": 0.06830073303049748,
+    "confusion_matrix": {
+      "tn": 275,
+      "fp": 22,
+      "fn": 14,
+      "tp": 51
+    }
+  },
+  "protected_files_sha256": {
+    "app.py": "a7122ff08148669199f523695472fa9da4e5a66f85f9635c244d0c0173fb1ed6",
+    "train.py": "b85a147d1de9ece9d4f9e3ce8b8d467b0f23a82f76b026f5ce63b573dbee13ab",
+    "validate_project.py": "52ef2ce9ace95c57c1ef8ac28cd4b8bfca5b2f8fa82bcd1ef4e4f197e5594c14",
+    "src/pipeline.py": "435ebdcc847b880d34f2b5e4559487d39f783ace09b0750cbfc42d692b039809",
+    "artifacts/metrics.json": "7d0e62fb47928483c6c98e9bc54e73b3d5ae0b463c5f5413bf99ebb6a72f5ba6",
+    "artifacts/model_summary.csv": "eb1d89874caf079a48c2e249735ef6a8f6f93e9839887381ae29b838d58e8510",
+    "artifacts/modeled_dataset.csv": "e000715fe9bec76d676db4d8db5a0c9552db85542fab1094e2aa7f55603a436a",
+    "artifacts/test_demo.csv": "1164d8418308001abe077124ff9bb3f38dfd632cc128a8eac7cdaa53d7f21a2e",
+    "artifacts/recovery_transition_diagnostics.csv": "c7075e936a4a51a53831984e8613f6dd2e44cfc242c257e705d3bbd50d94195f",
+    "models/random_forest_classifier.joblib": "c7231d4dfbe0b7b020aeb4dc39bd36072fe8001f9162c19eb1a89be592ac0cbd",
+    "models/catboost_regressor.cbm": "c34d4551164a26d7cdd3726fcb159651eb03ef0ae269f3a608d2937baeb594b3",
+    "artifacts/traffic_context_experiments/selected_model_comparison.csv": "ca85e30a94b9070740387e83feba1e5b69bd728e3f70ee5cd66c0d6207202f73",
+    "optimization_experiment/artifacts/experiment_results.json": "a5610cd53d33b6f531e680d4c6e5bf746b6de99b7f19f60d3ea678854512ca29"
+  }
+}

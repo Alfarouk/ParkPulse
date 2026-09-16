@@ -1,0 +1,48 @@
+row_type,split,parking_id,currently_saturated_rows,remains_at_least_90_rows,recovers_below_90_rows,recovery_rate
+split_summary,train,__ALL__,1604,1364,240,0.149625935
+car_park,train,BHMBCCMKT01,3,2,1,0.333333333
+car_park,train,BHMBCCPST01,30,25,5,0.166666667
+car_park,train,BHMBCCSNH01,84,71,13,0.154761905
+car_park,train,BHMBCCTHL01,22,15,7,0.318181818
+car_park,train,BHMBRCBRG01,109,90,19,0.174311927
+car_park,train,BHMBRCBRG02,46,36,10,0.217391304
+car_park,train,BHMEURBRD01,245,214,31,0.126530612
+car_park,train,BHMEURBRD02,226,193,33,0.146017699
+car_park,train,BHMMBMMBX01,80,62,18,0.225000000
+car_park,train,BHMNCPLDH01,170,146,24,0.141176471
+car_park,train,BHMNCPNHS01,209,184,25,0.119617225
+car_park,train,BHMNCPNST01,4,4,0,0.000000000
+car_park,train,BHMNCPRAN01,131,111,20,0.152671756
+car_park,train,Broad Street,226,196,30,0.132743363
+car_park,train,Bull Ring,10,7,3,0.300000000
+car_park,train,Others-CCCPS105a,3,3,0,0.000000000
+car_park,train,Others-CCCPS133,3,2,1,0.333333333
+car_park,train,Others-CCCPS8,3,3,0,0.000000000
+split_summary,validation,__ALL__,484,408,76,0.157024793
+car_park,validation,BHMBCCSNH01,63,55,8,0.126984127
+car_park,validation,BHMBCCTHL01,24,21,3,0.125000000
+car_park,validation,BHMBRCBRG01,34,25,9,0.264705882
+car_park,validation,BHMBRCBRG02,5,2,3,0.600000000
+car_park,validation,BHMEURBRD01,51,43,8,0.156862745
+car_park,validation,BHMEURBRD02,70,61,9,0.128571429
+car_park,validation,BHMMBMMBX01,32,25,7,0.218750000
+car_park,validation,BHMNCPLDH01,52,47,5,0.096153846
+car_park,validation,BHMNCPNHS01,48,41,7,0.145833333
+car_park,validation,BHMNCPRAN01,43,36,7,0.162790698
+car_park,validation,Broad Street,59,51,8,0.135593220
+car_park,validation,Others-CCCPS135a,3,1,2,0.666666667
+split_summary,test,__ALL__,362,297,65,0.179558011
+car_park,test,BHMBCCPST01,14,10,4,0.285714286
+car_park,test,BHMBCCSNH01,73,64,9,0.123287671
+car_park,test,BHMBCCTHL01,9,8,1,0.111111111
+car_park,test,BHMBRCBRG01,52,42,10,0.192307692
+car_park,test,BHMBRCBRG02,16,13,3,0.187500000
+car_park,test,BHMEURBRD01,27,22,5,0.185185185
+car_park,test,BHMEURBRD02,24,21,3,0.125000000
+car_park,test,BHMMBMMBX01,36,28,8,0.222222222
+car_park,test,BHMNCPLDH01,28,23,5,0.178571429
+car_park,test,BHMNCPNHS01,20,16,4,0.200000000
+car_park,test,BHMNCPRAN01,28,25,3,0.107142857
+car_park,test,Broad Street,22,16,6,0.272727273
+car_park,test,Bull Ring,12,9,3,0.250000000
+car_park,test,Others-CCCPS135a,1,0,1,1.000000000

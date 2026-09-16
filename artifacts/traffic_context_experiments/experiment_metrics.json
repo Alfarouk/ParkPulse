@@ -1,0 +1,178 @@
+{
+  "parking_only": {
+    "logistic": {
+      "fit_seconds": 0.270583199991961,
+      "threshold": 0.2799999999999999,
+      "validation": {
+        "threshold": 0.2799999999999999,
+        "accuracy": 0.9834058759521219,
+        "precision": 0.6555555555555556,
+        "recall": 0.6629213483146067,
+        "f1": 0.659217877094972,
+        "roc_auc": 0.9892464361004,
+        "pr_auc": 0.7486626033576076,
+        "brier": 0.011884304278172483
+      },
+      "test": {
+        "threshold": 0.2799999999999999,
+        "accuracy": 0.988250942141432,
+        "precision": 0.6349206349206349,
+        "recall": 0.5714285714285714,
+        "f1": 0.6015037593984962,
+        "roc_auc": 0.983218065429279,
+        "pr_auc": 0.6663788000171377,
+        "brier": 0.008399898754102108
+      }
+    },
+    "random_forest": {
+      "fit_seconds": 1.3781232000037562,
+      "threshold": 0.20999999999999996,
+      "validation": {
+        "threshold": 0.20999999999999996,
+        "accuracy": 0.984766050054407,
+        "precision": 0.6571428571428571,
+        "recall": 0.7752808988764045,
+        "f1": 0.711340206185567,
+        "roc_auc": 0.9930491819711003,
+        "pr_auc": 0.7896989492688841,
+        "brier": 0.010991677925424891
+      },
+      "test": {
+        "threshold": 0.20999999999999996,
+        "accuracy": 0.9898027045001109,
+        "precision": 0.6666666666666666,
+        "recall": 0.6857142857142857,
+        "f1": 0.676056338028169,
+        "roc_auc": 0.9928040660082993,
+        "pr_auc": 0.7740853038804862,
+        "brier": 0.0072335623120045305
+      }
+    },
+    "catboost": {
+      "fit_seconds": 17.358785899996292,
+      "threshold": 0.23999999999999994,
+      "best_iteration": 116,
+      "validation": {
+        "threshold": 0.23999999999999994,
+        "accuracy": 0.984766050054407,
+        "precision": 0.6736842105263158,
+        "recall": 0.7191011235955056,
+        "f1": 0.6956521739130435,
+        "roc_auc": 0.9929176207465785,
+        "pr_auc": 0.7852872234538903,
+        "brier": 0.010656221461213361
+      },
+      "test": {
+        "threshold": 0.23999999999999994,
+        "accuracy": 0.9898027045001109,
+        "precision": 0.7,
+        "recall": 0.6,
+        "f1": 0.6461538461538462,
+        "roc_auc": 0.9935021069900601,
+        "pr_auc": 0.7641905488867621,
+        "brier": 0.007396517586346769
+      }
+    },
+    "selected_model": "random_forest",
+    "selection_rule": "highest validation F1; validation PR-AUC then lower validation Brier as tie-breakers",
+    "feature_count": 12,
+    "classifier_rows": {
+      "train": 21593,
+      "valid": 3676,
+      "test": 4511
+    },
+    "positive_rows": {
+      "train": 250,
+      "valid": 89,
+      "test": 70
+    }
+  },
+  "parking_plus_traffic": {
+    "logistic": {
+      "fit_seconds": 0.19069719999970403,
+      "threshold": 0.23999999999999994,
+      "validation": {
+        "threshold": 0.23999999999999994,
+        "accuracy": 0.9836779107725789,
+        "precision": 0.6464646464646465,
+        "recall": 0.7191011235955056,
+        "f1": 0.6808510638297872,
+        "roc_auc": 0.9893811297350295,
+        "pr_auc": 0.7599472004315385,
+        "brier": 0.011759375138661472
+      },
+      "test": {
+        "threshold": 0.23999999999999994,
+        "accuracy": 0.9871425404566615,
+        "precision": 0.5833333333333334,
+        "recall": 0.6,
+        "f1": 0.5915492957746479,
+        "roc_auc": 0.9832759674461994,
+        "pr_auc": 0.6703933382733933,
+        "brier": 0.008468408687061982
+      }
+    },
+    "random_forest": {
+      "fit_seconds": 1.4503451000055065,
+      "threshold": 0.15999999999999998,
+      "validation": {
+        "threshold": 0.15999999999999998,
+        "accuracy": 0.9825897714907508,
+        "precision": 0.5954198473282443,
+        "recall": 0.8764044943820225,
+        "f1": 0.7090909090909091,
+        "roc_auc": 0.9928612373646407,
+        "pr_auc": 0.7688700198535543,
+        "brier": 0.011405605971664314
+      },
+      "test": {
+        "threshold": 0.15999999999999998,
+        "accuracy": 0.9873642207936156,
+        "precision": 0.5698924731182796,
+        "recall": 0.7571428571428571,
+        "f1": 0.6503067484662577,
+        "roc_auc": 0.9928941358123974,
+        "pr_auc": 0.7551351308579999,
+        "brier": 0.007576442495318575
+      }
+    },
+    "catboost": {
+      "fit_seconds": 19.03938869999547,
+      "threshold": 0.19999999999999996,
+      "best_iteration": 168,
+      "validation": {
+        "threshold": 0.19999999999999996,
+        "accuracy": 0.983949945593036,
+        "precision": 0.65,
+        "recall": 0.7303370786516854,
+        "f1": 0.6878306878306878,
+        "roc_auc": 0.9926701603480734,
+        "pr_auc": 0.7750166237475259,
+        "brier": 0.010864653903366333
+      },
+      "test": {
+        "threshold": 0.19999999999999996,
+        "accuracy": 0.9895810241631567,
+        "precision": 0.6716417910447762,
+        "recall": 0.6428571428571429,
+        "f1": 0.656934306569343,
+        "roc_auc": 0.9939749734615756,
+        "pr_auc": 0.7775146225830254,
+        "brier": 0.007147983567265783
+      }
+    },
+    "selected_model": "random_forest",
+    "selection_rule": "highest validation F1; validation PR-AUC then lower validation Brier as tie-breakers",
+    "feature_count": 20,
+    "classifier_rows": {
+      "train": 21593,
+      "valid": 3676,
+      "test": 4511
+    },
+    "positive_rows": {
+      "train": 250,
+      "valid": 89,
+      "test": 70
+    }
+  }
+}

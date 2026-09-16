@@ -1,0 +1,153 @@
+{
+  "persistence_classifier": {
+    "fit_seconds": 0.0,
+    "threshold": 0.9,
+    "test": {
+      "threshold": 0.9,
+      "accuracy": 0.9844823764132121,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "roc_auc": 0.9550197831891144,
+      "pr_auc": 0.2626417276681934,
+      "brier": 0.28083731043492743
+    }
+  },
+  "logistic": {
+    "fit_seconds": 0.1054186999972444,
+    "threshold": 0.14999999999999997,
+    "validation": {
+      "threshold": 0.14999999999999997,
+      "accuracy": 0.9768770402611534,
+      "precision": 0.5140845070422535,
+      "recall": 0.8202247191011236,
+      "f1": 0.6320346320346321,
+      "roc_auc": 0.9892464361004,
+      "pr_auc": 0.7486626033576076,
+      "brier": 0.011884304278172483
+    },
+    "test": {
+      "threshold": 0.14999999999999997,
+      "accuracy": 0.9869208601197074,
+      "precision": 0.5578947368421052,
+      "recall": 0.7571428571428571,
+      "f1": 0.6424242424242425,
+      "roc_auc": 0.983218065429279,
+      "pr_auc": 0.6663788000171377,
+      "brier": 0.008399898754102108
+    }
+  },
+  "random_forest": {
+    "fit_seconds": 0.9648219999944558,
+    "threshold": 0.20999999999999996,
+    "validation": {
+      "threshold": 0.20999999999999996,
+      "accuracy": 0.984766050054407,
+      "precision": 0.6571428571428571,
+      "recall": 0.7752808988764045,
+      "f1": 0.711340206185567,
+      "roc_auc": 0.9930491819711003,
+      "pr_auc": 0.7896989492688841,
+      "brier": 0.010991677925424891
+    },
+    "test": {
+      "threshold": 0.20999999999999996,
+      "accuracy": 0.9898027045001109,
+      "precision": 0.6666666666666666,
+      "recall": 0.6857142857142857,
+      "f1": 0.676056338028169,
+      "roc_auc": 0.9928040660082993,
+      "pr_auc": 0.7740853038804862,
+      "brier": 0.0072335623120045305
+    }
+  },
+  "catboost": {
+    "fit_seconds": 13.479360199999064,
+    "threshold": 0.23999999999999994,
+    "best_iteration": 116,
+    "validation": {
+      "threshold": 0.23999999999999994,
+      "accuracy": 0.984766050054407,
+      "precision": 0.6736842105263158,
+      "recall": 0.7191011235955056,
+      "f1": 0.6956521739130435,
+      "roc_auc": 0.9929176207465785,
+      "pr_auc": 0.7852872234538903,
+      "brier": 0.010656221461213361
+    },
+    "test": {
+      "threshold": 0.23999999999999994,
+      "accuracy": 0.9898027045001109,
+      "precision": 0.7,
+      "recall": 0.6,
+      "f1": 0.6461538461538462,
+      "roc_auc": 0.9935021069900601,
+      "pr_auc": 0.7641905488867621,
+      "brier": 0.007396517586346769
+    }
+  },
+  "deployed_classifier": {
+    "model": "random_forest",
+    "model_file": "random_forest_classifier.joblib",
+    "experiment": "parking_only",
+    "feature_set": "FEATURES",
+    "threshold": 0.20999999999999996,
+    "selection_rule": "highest validation F1; validation PR-AUC then lower validation Brier as tie-breakers",
+    "source_artifact": "artifacts/traffic_context_experiments/selected_model_comparison.csv",
+    "validation": {
+      "threshold": 0.20999999999999996,
+      "accuracy": 0.984766050054407,
+      "precision": 0.6571428571428571,
+      "recall": 0.7752808988764045,
+      "f1": 0.711340206185567,
+      "roc_auc": 0.9930491819711003,
+      "pr_auc": 0.7896989492688841,
+      "brier": 0.010991677925424891
+    },
+    "test": {
+      "threshold": 0.20999999999999996,
+      "accuracy": 0.9898027045001109,
+      "precision": 0.6666666666666666,
+      "recall": 0.6857142857142857,
+      "f1": 0.676056338028169,
+      "roc_auc": 0.9928040660082993,
+      "pr_auc": 0.7740853038804862,
+      "brier": 0.0072335623120045305
+    }
+  },
+  "persistence_regressor": {
+    "fit_seconds": 0.0,
+    "test": {
+      "mae": 49.36856146111225,
+      "rmse": 89.36105937652903,
+      "r2": 0.9856813639413954
+    }
+  },
+  "rf_regressor": {
+    "fit_seconds": 4.266613400002825,
+    "validation": {
+      "mae": 17.779524677777825,
+      "rmse": 31.98178280622254,
+      "r2": 0.9980981557415842
+    },
+    "test": {
+      "mae": 19.46112124490675,
+      "rmse": 37.12766153840976,
+      "r2": 0.9975282745694307
+    }
+  },
+  "catboost_regressor": {
+    "fit_seconds": 34.896297300001606,
+    "best_iteration": 699,
+    "validation": {
+      "mae": 17.14184046000007,
+      "rmse": 28.320432081852836,
+      "r2": 0.9985086850871969
+    },
+    "test": {
+      "mae": 18.780024168553897,
+      "rmse": 34.65749382827745,
+      "r2": 0.9978462299057438
+    }
+  }
+}

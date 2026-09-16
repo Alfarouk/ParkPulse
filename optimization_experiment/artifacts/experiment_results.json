@@ -1,0 +1,248 @@
+{
+  "baseline_validation": {
+    "threshold": 0.20999999999999996,
+    "accuracy": 0.984766050054407,
+    "precision": 0.6571428571428571,
+    "recall": 0.7752808988764045,
+    "f1": 0.711340206185567,
+    "roc_auc": 0.9930491819711003,
+    "pr_auc": 0.7896989492688841,
+    "brier": 0.010991677925424891
+  },
+  "baseline_rolling_validation": {
+    "candidate_id": "existing_random_forest",
+    "family": "random_forest",
+    "feature_set": "existing",
+    "is_new": false,
+    "params": "{\"class_weight\": null, \"max_depth\": null, \"max_features\": \"sqrt\", \"min_samples_leaf\": 2, \"n_estimators\": 400}",
+    "mean_precision": 0.7360518334711884,
+    "mean_recall": 0.7187204181586204,
+    "mean_f1": 0.7268388837016287,
+    "mean_pr_auc": 0.7642085238879374,
+    "mean_roc_auc": 0.9928295097315677,
+    "mean_brier": 0.008548321780797266,
+    "mean_fit_seconds": 5.2462922999984585,
+    "selection_score": 0.745523703794783
+  },
+  "best_new_rolling_validation": {
+    "candidate_id": "catboost_positive_4",
+    "family": "catboost",
+    "feature_set": "dynamics_history",
+    "is_new": true,
+    "params": "{\"class_weights\": [1.0, 4.0], \"depth\": 7, \"learning_rate\": 0.05}",
+    "mean_precision": 0.7411512608441847,
+    "mean_recall": 0.7846201863055796,
+    "mean_f1": 0.760440211083282,
+    "mean_pr_auc": 0.8113330005262996,
+    "mean_roc_auc": 0.9925084308314057,
+    "mean_brier": 0.009071777429530655,
+    "mean_fit_seconds": 10.298798333329614,
+    "selection_score": 0.7858866058047909
+  },
+  "winner": {
+    "frozen_before_test_evaluation": true,
+    "selection_data": "three expanding chronological validation folds only",
+    "selection_rule": "maximize mean of rolling PR-AUC and threshold-optimized F1; then PR-AUC, F1, precision and recall",
+    "selected_candidate": "catboost_positive_4",
+    "family": "catboost",
+    "feature_set": "dynamics_history",
+    "features": [
+      "parking_id",
+      "capacity",
+      "occupancy",
+      "occupancy_ratio",
+      "lag30_ratio",
+      "lag60_ratio",
+      "delta30_ratio",
+      "delta60_ratio",
+      "hour_sin",
+      "hour_cos",
+      "weekday",
+      "is_weekend",
+      "distance_to_90",
+      "occupancy_change_30",
+      "occupancy_change_60",
+      "occupancy_change_90",
+      "rolling_slope_60",
+      "rolling_slope_90",
+      "occupancy_acceleration",
+      "rolling_std_60",
+      "rolling_std_90",
+      "estimated_minutes_to_90",
+      "garage_slot_hist_mean",
+      "garage_slot_hist_median",
+      "garage_slot_hist_std",
+      "garage_slot_hist_p90",
+      "garage_slot_hist_count"
+    ],
+    "params": {
+      "depth": 7,
+      "learning_rate": 0.05,
+      "class_weights": [
+        1.0,
+        4.0
+      ]
+    },
+    "threshold": 0.44999999999999984,
+    "model_file": "models\\catboost_positive_4.cbm",
+    "rolling_validation": {
+      "candidate_id": "catboost_positive_4",
+      "family": "catboost",
+      "feature_set": "dynamics_history",
+      "is_new": true,
+      "params": "{\"class_weights\": [1.0, 4.0], \"depth\": 7, \"learning_rate\": 0.05}",
+      "mean_precision": 0.7411512608441847,
+      "mean_recall": 0.7846201863055796,
+      "mean_f1": 0.760440211083282,
+      "mean_pr_auc": 0.8113330005262996,
+      "mean_roc_auc": 0.9925084308314057,
+      "mean_brier": 0.009071777429530655,
+      "mean_fit_seconds": 10.298798333329614,
+      "selection_score": 0.7858866058047909
+    },
+    "final_validation": {
+      "threshold": 0.44999999999999984,
+      "accuracy": 0.985582154515778,
+      "precision": 0.68,
+      "recall": 0.7640449438202247,
+      "f1": 0.7195767195767195,
+      "roc_auc": 0.993172912170353,
+      "pr_auc": 0.8000037514932522,
+      "brier": 0.012902628088868476
+    },
+    "baseline_final_validation": {
+      "threshold": 0.20999999999999996,
+      "accuracy": 0.984766050054407,
+      "precision": 0.6571428571428571,
+      "recall": 0.7752808988764045,
+      "f1": 0.711340206185567,
+      "roc_auc": 0.9930491819711003,
+      "pr_auc": 0.7896989492688841,
+      "brier": 0.010991677925424891
+    },
+    "validation_bootstrap_deltas": {
+      "precision": {
+        "mean_delta": 0.022478298988385863,
+        "ci_2_5": -0.021438834154351428,
+        "ci_97_5": 0.065513684046556,
+        "bootstrap_samples": 1000,
+        "cluster_unit": "calendar_day"
+      },
+      "recall": {
+        "mean_delta": -0.011388402621802306,
+        "ci_2_5": -0.0786516853932584,
+        "ci_97_5": 0.05103355775299804,
+        "bootstrap_samples": 1000,
+        "cluster_unit": "calendar_day"
+      },
+      "f1": {
+        "mean_delta": 0.008795647975231453,
+        "ci_2_5": -0.006720130893887888,
+        "ci_97_5": 0.022200178555349143,
+        "bootstrap_samples": 1000,
+        "cluster_unit": "calendar_day"
+      },
+      "pr_auc": {
+        "mean_delta": 0.01004175893587503,
+        "ci_2_5": -0.021200881685801753,
+        "ci_97_5": 0.0407349031985838,
+        "bootstrap_samples": 1000,
+        "cluster_unit": "calendar_day"
+      }
+    }
+  },
+  "untouched_test": {
+    "baseline": {
+      "threshold": 0.20999999999999996,
+      "accuracy": 0.9898027045001109,
+      "precision": 0.6666666666666666,
+      "recall": 0.6857142857142857,
+      "f1": 0.676056338028169,
+      "roc_auc": 0.9928040660082993,
+      "pr_auc": 0.7740853038804862,
+      "brier": 0.0072335623120045305
+    },
+    "winner": {
+      "threshold": 0.44999999999999984,
+      "accuracy": 0.9886943028153403,
+      "precision": 0.6266666666666667,
+      "recall": 0.6714285714285714,
+      "f1": 0.6482758620689655,
+      "roc_auc": 0.9931032264290539,
+      "pr_auc": 0.7670624664826643,
+      "brier": 0.009505831887711993
+    },
+    "deltas": {
+      "precision": -0.039999999999999925,
+      "recall": -0.014285714285714346,
+      "f1": -0.02778047595920352,
+      "pr_auc": -0.007022837397821946
+    },
+    "bootstrap_deltas": {
+      "precision": {
+        "mean_delta": -0.04054648717301068,
+        "ci_2_5": -0.09268696542672117,
+        "ci_97_5": 0.013343569755310073,
+        "bootstrap_samples": 1000,
+        "cluster_unit": "calendar_day"
+      },
+      "recall": {
+        "mean_delta": -0.017000526447333925,
+        "ci_2_5": -0.08928571428571419,
+        "ci_97_5": 0.039999999999999925,
+        "bootstrap_samples": 1000,
+        "cluster_unit": "calendar_day"
+      },
+      "f1": {
+        "mean_delta": -0.029631151315455278,
+        "ci_2_5": -0.06486723467076139,
+        "ci_97_5": -0.0027785734286186544,
+        "bootstrap_samples": 1000,
+        "cluster_unit": "calendar_day"
+      },
+      "pr_auc": {
+        "mean_delta": -0.007445445506678732,
+        "ci_2_5": -0.033621958060333385,
+        "ci_97_5": 0.023334786919053024,
+        "bootstrap_samples": 1000,
+        "cluster_unit": "calendar_day"
+      }
+    }
+  },
+  "validation_deltas": {
+    "precision": 0.02285714285714291,
+    "recall": -0.011235955056179803,
+    "f1": 0.0082365133911525,
+    "pr_auc": 0.010304802224368137
+  },
+  "operational_materiality_rule": "F1 and PR-AUC improve by at least 0.02 on validation and test, with precision and recall both improving on validation and test.",
+  "operationally_meaningful": false,
+  "statistically_supported": false,
+  "recommend_replacement": false,
+  "target_feasibility": {
+    "raw_rows": 35116,
+    "garages": 30,
+    "interval_minutes": {
+      "median_all": 32.93333333333333,
+      "median_non_overnight": 30.0,
+      "p10_non_overnight": 26.0,
+      "p90_non_overnight": 34.016666666666666,
+      "fraction_at_most_15": 0.0016012084592145015,
+      "fraction_at_most_30": 0.5009063444108761,
+      "fraction_between_20_and_40": 0.9752265861027191
+    },
+    "eligible_modeled_rows": 29823,
+    "fraction_with_observation_within_30": 0.5046440666599604,
+    "fraction_with_two_or_more_observations_within_30": 0.0,
+    "observable_rows": 15050,
+    "current_vs_any_within_30_agreement_on_observable_rows": 1.0,
+    "current_positive_alt_negative": 0,
+    "current_negative_alt_positive": 0,
+    "supports_crosses_within_30_target": false,
+    "conclusion": "Sampling is too sparse to reliably observe every crossing within 30 minutes; the alternative target would mostly describe the next observation, not the crossing time."
+  },
+  "availability": {
+    "imbalanced_learn": false,
+    "xgboost": false
+  }
+}

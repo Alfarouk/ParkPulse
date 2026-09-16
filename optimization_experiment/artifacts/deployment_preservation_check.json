@@ -1,0 +1,17 @@
+{
+  "protected_hashes_before": {
+    "models\\random_forest_classifier.joblib": "c7231d4dfbe0b7b020aeb4dc39bd36072fe8001f9162c19eb1a89be592ac0cbd",
+    "models\\catboost_regressor.cbm": "c34d4551164a26d7cdd3726fcb159651eb03ef0ae269f3a608d2937baeb594b3",
+    "app.py": "3c6eb68ad0ba8120efe14c66db21a8999873483ddd968af328fa3bbc9c19a9d7",
+    "artifacts\\metrics.json": "7d0e62fb47928483c6c98e9bc54e73b3d5ae0b463c5f5413bf99ebb6a72f5ba6",
+    "artifacts\\model_summary.csv": "eb1d89874caf079a48c2e249735ef6a8f6f93e9839887381ae29b838d58e8510"
+  },
+  "protected_hashes_after": {
+    "models\\random_forest_classifier.joblib": "c7231d4dfbe0b7b020aeb4dc39bd36072fe8001f9162c19eb1a89be592ac0cbd",
+    "models\\catboost_regressor.cbm": "c34d4551164a26d7cdd3726fcb159651eb03ef0ae269f3a608d2937baeb594b3",
+    "app.py": "3c6eb68ad0ba8120efe14c66db21a8999873483ddd968af328fa3bbc9c19a9d7",
+    "artifacts\\metrics.json": "7d0e62fb47928483c6c98e9bc54e73b3d5ae0b463c5f5413bf99ebb6a72f5ba6",
+    "artifacts\\model_summary.csv": "eb1d89874caf079a48c2e249735ef6a8f6f93e9839887381ae29b838d58e8510"
+  },
+  "all_unchanged": true
+}

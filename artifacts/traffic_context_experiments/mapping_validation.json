@@ -1,0 +1,67 @@
+{
+  "boundary_rules": {
+    "validated_rows": 161,
+    "day_group_mismatches": 0,
+    "hour_bucket_mismatches": 0,
+    "context_key_mismatches": 0,
+    "speed_column_mismatches": 0,
+    "acceleration_column_mismatches": 0,
+    "validated_weekdays": 7,
+    "validated_hours": 23,
+    "validated_context_keys": 35
+  },
+  "parking_timestamps": {
+    "train": {
+      "validated_rows": 23197,
+      "day_group_mismatches": 0,
+      "hour_bucket_mismatches": 0,
+      "context_key_mismatches": 0,
+      "speed_column_mismatches": 0,
+      "acceleration_column_mismatches": 0
+    },
+    "valid": {
+      "validated_rows": 4160,
+      "day_group_mismatches": 0,
+      "hour_bucket_mismatches": 0,
+      "context_key_mismatches": 0,
+      "speed_column_mismatches": 0,
+      "acceleration_column_mismatches": 0
+    },
+    "test": {
+      "validated_rows": 4873,
+      "day_group_mismatches": 0,
+      "hour_bucket_mismatches": 0,
+      "context_key_mismatches": 0,
+      "speed_column_mismatches": 0,
+      "acceleration_column_mismatches": 0
+    }
+  },
+  "unique_parking_context_keys": [
+    "D0H12.13",
+    "D0H14.15",
+    "D0H16.18",
+    "D0H7.8",
+    "D0H9.11",
+    "D1H12.13",
+    "D1H14.15",
+    "D1H16.18",
+    "D1H7.8",
+    "D1H9.11",
+    "D2.3.4H12.13",
+    "D2.3.4H14.15",
+    "D2.3.4H16.18",
+    "D2.3.4H7.8",
+    "D2.3.4H9.11",
+    "D5H12.13",
+    "D5H14.15",
+    "D5H16.18",
+    "D5H7.8",
+    "D5H9.11",
+    "D6H12.13",
+    "D6H14.15",
+    "D6H16.18",
+    "D6H7.8",
+    "D6H9.11"
+  ],
+  "lookup_context_count": 35
+}

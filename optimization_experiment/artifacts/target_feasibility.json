@@ -1,0 +1,22 @@
+{
+  "raw_rows": 35116,
+  "garages": 30,
+  "interval_minutes": {
+    "median_all": 32.93333333333333,
+    "median_non_overnight": 30.0,
+    "p10_non_overnight": 26.0,
+    "p90_non_overnight": 34.016666666666666,
+    "fraction_at_most_15": 0.0016012084592145015,
+    "fraction_at_most_30": 0.5009063444108761,
+    "fraction_between_20_and_40": 0.9752265861027191
+  },
+  "eligible_modeled_rows": 29823,
+  "fraction_with_observation_within_30": 0.5046440666599604,
+  "fraction_with_two_or_more_observations_within_30": 0.0,
+  "observable_rows": 15050,
+  "current_vs_any_within_30_agreement_on_observable_rows": 1.0,
+  "current_positive_alt_negative": 0,
+  "current_negative_alt_positive": 0,
+  "supports_crosses_within_30_target": false,
+  "conclusion": "Sampling is too sparse to reliably observe every crossing within 30 minutes; the alternative target would mostly describe the next observation, not the crossing time."
+}
