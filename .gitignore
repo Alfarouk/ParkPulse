@@ -23,8 +23,6 @@ Thumbs.db
 ~$*
 catboost_info/
 
-# Large local-only research data
-data/Year_2016.csv
 
 # Reproducible, non-deployed model outputs
 models/*.joblib
